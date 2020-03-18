@@ -38,29 +38,30 @@ public class RegexTree {
         return root;
     }
 
-    private void prettyPrint(RegexTreeNode node, StringBuilder prepend, StringBuilder buffer) {
-        if (node == null) {
-            buffer.append(prepend);
-            buffer.append("null");
-            buffer.append("\n");
-            return;
-        }
-
-        buffer.append(prepend);
+    private void prettyPrint(RegexTreeNode node, String prefix, String childPrefix, 
+                             StringBuilder buffer) {
+        buffer.append(prefix);
         buffer.append(node.getValue());
         buffer.append('\n');
 
-        prepend.append("    ");
-        prettyPrint(node.getLeftChild(), prepend, buffer);
-        prettyPrint(node.getRightChild(), prepend, buffer);
-        prepend.setLength(prepend.length() - 4);
+        RegexTreeNode leftChild = node.getLeftChild(), rightChild = node.getRightChild();
+
+        if (leftChild != null) {
+            if (rightChild != null) {
+                prettyPrint(leftChild, childPrefix + "├── ", childPrefix + "│   ", buffer);
+                prettyPrint(rightChild, childPrefix + "└── ", childPrefix + "    ", buffer);
+            }
+            else {
+                prettyPrint(leftChild, childPrefix + "└── ", childPrefix + "    ", buffer);
+            }
+        }
     }
 
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         
-        prettyPrint(root, new StringBuilder(), buffer);
+        prettyPrint(root, "", "", buffer);
 
         return buffer.toString();
     }
