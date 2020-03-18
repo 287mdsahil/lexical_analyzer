@@ -9,6 +9,10 @@ public class RegexToken {
         this.value = value;
     }
 
+    public boolean isOperand() {
+        return (type == RegexTokenType.CHAR) || (type == RegexTokenType.EPSILON);
+    }
+
     public static RegexToken getToken(RegexSpecialChar spec) {
         switch (spec) {
             case BCLOSE:    return new RegexToken(RegexTokenType.BCLOSE, spec.charValue());
