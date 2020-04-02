@@ -92,7 +92,14 @@ public class NFA {
         Set<Integer> states = epsilonTransitions.get(from);
         states.add(to);
     }
-
+    public ArrayList<Map<Character, Set<Integer>>> getNormalTransition()
+    {
+        return normalTransitions;
+    }
+    public ArrayList<Set<Integer>> getEpsilonTransition()
+    {
+        return epsilonTransitions;
+    }
     public Set<Integer> epsilonClosure(int state) {
         if (state < 0 || state >= numberOfStates)
             throw new IllegalArgumentException("Invalid state value");
@@ -183,7 +190,10 @@ public class NFA {
     public Set<Integer> getFinalStates() {
         return new TreeSet<>(finalStates);
     }
-
+    public Set<Integer> getCurrentStates()
+    {
+        return new TreeSet<>(currentStates);
+    }
     public void setFinalStates(Collection<Integer> finalStates) {
         if (!areValuesInRange(numberOfStates, finalStates))
             throw new IllegalArgumentException("Invalid state value");
