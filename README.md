@@ -9,12 +9,14 @@ syntax_analyzer/
     src/    // this will contain java sources, subfolders in here denote packages
         automata/
         regex/
+        nfa/
 ```
 
 ### Package Information
 
 1. [`automata`](docs/automata.md) - finite state machines
 2. [`regex`](docs/regex.md) - regular expression parsing, and utilities like shunting yard algorithm and tree generation
+3. [`nfa`] - conversion of regex to NFA, using Thompson algorithm
 
 ### Compilation
 
