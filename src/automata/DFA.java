@@ -11,7 +11,7 @@ import java.util.TreeSet;
 public class DFA {
   private int numberOfStates, startState, currentState;
   private Set<Integer> finalStates;
-  private Boolean isInDeadState;
+  private boolean isInDeadState;
   private ArrayList<Map<Character, Integer>> transitions;
 
   public DFA(int numberOfStates, int startState, Collection<Integer> finalStates) {
@@ -118,8 +118,7 @@ public class DFA {
   }
 
   public boolean isInFinalState() {
-    if (finalStates.contains(currentState)) return true;
-    else return false;
+    return finalStates.contains(currentState)
   }
 
   public static void main(String[] args) {
