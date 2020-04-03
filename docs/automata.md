@@ -120,4 +120,71 @@ Basic runner/tester.
 
 ## DFA
 
-Under construction.
+**Note**: States of the NFA are integers in the range `[0, numberOfStates)`. Any violation will generate an exception in the respective constructor/method.
+
+### Availabe public methods
+
+```java
+public DFA(int numberOfStates, int startState, Collection<Integer> finalStates)
+```
+Constructor
+
+```java
+public DFA(DFA other)
+```
+Copy Constructor. The new dfa created will be exactly the same as the other dfa. The current states will also be the same.
+
+```java
+public void addTransition(int from, char on, int to)
+```
+Adds a transition to the dfa.
+
+```java
+public void advance(char ch)
+```
+Advances the dfa. Takes the input character as arguement.
+
+```java
+public void reset()
+```
+Resets the current state to the start state.
+
+```java
+public int getNumberOfStates()
+```
+Returns the number of states.
+
+```java
+public void increaseNumberOfStates(int by)
+```
+Increases the number of states by the given arguement. (The arguement must be a positive integer)
+
+```java
+public int getStartState()
+```
+Returns the Id(integer) of the start state.
+
+```java
+public void setStartState(int startState)
+```
+Sets the state corresponding to the provided id as the start state.
+
+```java
+public Set<Integer> getFinalStates()
+```
+Returns the set of final states.
+
+```java
+public void setFinalStates(Collection<Integer> finalStates)
+```
+Sets the states corresponding to the provided collection of integer ids as the finals states.
+
+```java
+public boolean isInFinalState()
+```
+Returns true if the current state is a final state. Else returns false.
+
+```java
+public static void main(String[] args)
+```
+A simple tester function
