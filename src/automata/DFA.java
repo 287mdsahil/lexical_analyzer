@@ -9,9 +9,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class DFA {
+    public static final int DEAD_STATE = -1;
+
     private int numberOfStates, startState, currentState;
     private Set<Integer> finalStates;
-    private boolean isInDeadState;
     private ArrayList<Map<Character, Integer>> transitions;
 
     public DFA(int numberOfStates, int startState, Collection<Integer> finalStates) {
@@ -21,7 +22,6 @@ public class DFA {
         this.numberOfStates = numberOfStates;
         this.startState = startState;
         this.currentState = startState;
-        this.isInDeadState = false;
         this.finalStates = new TreeSet<>(finalStates);
 
         initTransitions();
@@ -31,7 +31,6 @@ public class DFA {
         this.numberOfStates = other.numberOfStates;
         this.startState = other.startState;
         this.currentState = other.currentState;
-        this.isInDeadState = other.isInDeadState;
         this.finalStates = new TreeSet<>(other.finalStates);
 
         initTransitions(other.transitions);
@@ -66,14 +65,18 @@ public class DFA {
     }
 
     public void advance(char ch) {
-        if (isInDeadState) throw new IllegalStateException("Advancing while in dead state");
+        if (isInDeadState()) throw new IllegalStateException("Advancing while in dead state");
 
         Integer nextState = transitions.get(currentState).get(ch);
         if (nextState == null) {
-            isInDeadState = true;
+            currentState = DEAD_STATE;
         } else {
             currentState = nextState;
         }
+    }
+
+    public boolean isInDeadState() {
+        return currentState == DEAD_STATE;
     }
 
     public void reset() {
