@@ -210,6 +210,16 @@ public class NFA {
         return false;
     }
 
+    public Set<Character> getAlphabet() {
+        Set<Character> alphabet = new TreeSet<>();
+
+        for (Map<Character, Set<Integer>> t : normalTransitions) {
+            alphabet.addAll(t.keySet());
+        }
+
+        return alphabet;
+    }
+
     public static void main(String[] args) {
         NFA nfa = new NFA(5, 0, List.of(2, 4));
 
@@ -219,8 +229,10 @@ public class NFA {
         nfa.addNormalTransition(2, 'a', 2);
         nfa.addNormalTransition(3, 'b', 4);
         nfa.addNormalTransition(4, 'b', 4);
+        nfa.addNormalTransition(4, 'c', 4);
         nfa.reset();
 
+        System.out.println("Alphabet: " + nfa.getAlphabet());
         System.out.println(nfa.currentStates);
         System.out.println();
 
