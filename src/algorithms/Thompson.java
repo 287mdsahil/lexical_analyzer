@@ -3,6 +3,7 @@ package algorithms;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,20 +19,20 @@ import regex.RegexTreeNodeType;
 public class Thompson {
 
     public static NFA epsilon(char val) {
-        NFA n = new NFA(2, 0, new TreeSet<>(Arrays.asList(1)));
+        NFA n = new NFA(2, 0, Collections.singleton(1));
         n.addEpsilonTransition(0, 1);
         return n;
     }
 
     public static NFA single(char val) {
-        NFA n = new NFA(2, 0, new TreeSet<>(Arrays.asList(1)));
+        NFA n = new NFA(2, 0, Collections.singleton(1));
         n.addNormalTransition(0, val, 1);
         return n;
     }
 
     public static NFA kleene(NFA s) {
         int totalStates = s.getNumberOfStates() + 2;
-        NFA n = new NFA(totalStates, 0, new TreeSet<>(Arrays.asList(totalStates - 1)));
+        NFA n = new NFA(totalStates, 0, Collections.singleton(totalStates-1));
         ArrayList<Map<Character, Set<Integer>>> snormal = s.getNormalTransitions();
         ArrayList<Set<Integer>> sepsilon = s.getEpsilonTransitions();
         int increment = 1;
@@ -57,7 +58,7 @@ public class Thompson {
 
     public static NFA union(NFA s, NFA t) {
         int totalState = s.getNumberOfStates() + t.getNumberOfStates() + 2;
-        NFA n = new NFA(totalState, 0, Arrays.asList(totalState - 1));
+        NFA n = new NFA(totalState, 0, Collections.singleton(totalState-1));
 
         ArrayList<Map<Character, Set<Integer>>> tnormal = t.getNormalTransitions();
         ArrayList<Set<Integer>> tepsilon = t.getEpsilonTransitions();
@@ -144,13 +145,12 @@ public class Thompson {
 
     public static void main(String args[]) {
         String str = "a*a";
-        Thompson t = new Thompson();
         System.out.println(str);
         Regex reg = new Regex(str);
         RegexTree tree = new RegexTree(reg);
         System.out.println(tree);
 
-        NFA imran = t.traverse(tree.getRoot());
+        NFA imran = traverse(tree.getRoot());
         imran.reset();
 
         System.out.println(imran.getNumberOfStates());
