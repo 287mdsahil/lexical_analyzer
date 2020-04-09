@@ -120,7 +120,7 @@ Basic runner/tester.
 
 ## DFA
 
-**Note**: States of the NFA are integers in the range `[0, numberOfStates)`. Any violation will generate an exception in the respective constructor/method.
+**Note**: States of the DFA are integers in the range `[0, numberOfStates)`. Any violation will generate an exception in the respective constructor/method.
 
 ### Availabe public methods
 
