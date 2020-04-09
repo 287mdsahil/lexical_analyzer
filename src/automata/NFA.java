@@ -13,8 +13,8 @@ import java.util.TreeSet;
 public class NFA {
     private int numberOfStates, startState;
     private Set<Integer> currentStates, finalStates;
-    private ArrayList< Map<Character, Set<Integer>> > normalTransitions;
-    private ArrayList< Set<Integer> > epsilonTransitions;
+    private ArrayList<Map<Character, Set<Integer>>> normalTransitions;
+    private ArrayList<Set<Integer>> epsilonTransitions;
 
     public NFA(int numberOfStates, int startState, Collection<Integer> finalStates) {
         if (startState >= numberOfStates || !areValuesInRange(numberOfStates, finalStates))
@@ -45,7 +45,7 @@ public class NFA {
             normalTransitions.add(new TreeMap<>());
     }
 
-    private void initNormalTransitions(ArrayList< Map<Character, Set<Integer>> > transitions) {
+    private void initNormalTransitions(ArrayList<Map<Character, Set<Integer>>> transitions) {
         normalTransitions = new ArrayList<>(numberOfStates);
         for (int idx = 0; idx < numberOfStates; idx++) {
             normalTransitions.add(new TreeMap<>());
@@ -93,6 +93,14 @@ public class NFA {
         states.add(to);
     }
 
+    public ArrayList<Map<Character, Set<Integer>>> getNormalTransitions() {
+        return normalTransitions;
+    }
+
+    public ArrayList<Set<Integer>> getEpsilonTransitions() {
+        return epsilonTransitions;
+    }
+
     public Set<Integer> epsilonClosure(int state) {
         if (state < 0 || state >= numberOfStates)
             throw new IllegalArgumentException("Invalid state value");
@@ -103,7 +111,7 @@ public class NFA {
     public Set<Integer> epsilonClosure(Set<Integer> states) {
         if (!areValuesInRange(numberOfStates, states))
             throw new IllegalArgumentException("Invalid state value");
-                
+
         Set<Integer> epsilonClosure = new TreeSet<>(states);
 
         Stack<Integer> stk = new Stack<>();
@@ -131,7 +139,7 @@ public class NFA {
 
         for (Integer state : states) {
             Set<Integer> reachableFromCurrent = normalTransitions.get(state).get(on);
-            if (reachableFromCurrent != null) 
+            if (reachableFromCurrent != null)
                 reachableStates.addAll(reachableFromCurrent);
         }
 
@@ -158,8 +166,7 @@ public class NFA {
 
     public void increaseNumberOfStates(int by) {
         if (by <= 0)
-            throw new IllegalArgumentException(
-                "Number of states must increase by some positive value");
+            throw new IllegalArgumentException("Number of states must increase by some positive value");
 
         for (int idx = 0; idx < by; idx++) {
             normalTransitions.add(new TreeMap<>());
@@ -184,6 +191,10 @@ public class NFA {
         return new TreeSet<>(finalStates);
     }
 
+    public Set<Integer> getCurrentStates() {
+        return new TreeSet<>(currentStates);
+    }
+
     public void setFinalStates(Collection<Integer> finalStates) {
         if (!areValuesInRange(numberOfStates, finalStates))
             throw new IllegalArgumentException("Invalid state value");
@@ -192,7 +203,7 @@ public class NFA {
     }
 
     public boolean isInFinalState() {
-        for (Integer state : currentStates) 
+        for (Integer state : currentStates)
             if (finalStates.contains(state))
                 return true;
 
