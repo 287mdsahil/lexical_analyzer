@@ -23,49 +23,49 @@ public class SubsetConstruction {
         // Initialization
         Map<Integer, Set<Integer>> subsets = new TreeMap<>();
         subsets.put(0, nfa.epsilonClosure(start));
-        List<Integer> unmarked_dfa_states = new ArrayList<>();
-        unmarked_dfa_states.add(0);
+        List<Integer> unmarkedDfaStates = new ArrayList<>();
+        unmarkedDfaStates.add(0);
 
         // Loop to form subsets
-        while (!unmarked_dfa_states.isEmpty()) {
-            int cur_dfa_state = unmarked_dfa_states.get(0);
-            unmarked_dfa_states.remove(0);
-            Set<Integer> cur_nfa_states = subsets.get(cur_dfa_state);
+        while (!unmarkedDfaStates.isEmpty()) {
+            int curDfaState = unmarkedDfaStates.get(0);
+            unmarkedDfaStates.remove(0);
+            Set<Integer> curNfaStates = subsets.get(curDfaState);
 
             for (Character a : alphabets) {
-                Set<Integer> u = nfa.epsilonClosure(nfa.move(cur_nfa_states, a));
+                Set<Integer> u = nfa.epsilonClosure(nfa.move(curNfaStates, a));
                 if (!u.isEmpty()) {
-                    Integer new_dfa_state = null;
+                    Integer newDfaState = null;
                     if (!subsets.containsValue(u)) {
-                        new_dfa_state = subsets.size();
-                        subsets.put(new_dfa_state, u);
-                        unmarked_dfa_states.add(new_dfa_state);
+                        newDfaState = subsets.size();
+                        subsets.put(newDfaState, u);
+                        unmarkedDfaStates.add(newDfaState);
 
                         dfa.increaseNumberOfStates(1);
 
                         // check if new state is a final state
-                        boolean is_final = false;
-                        for (int nfa_state : u) {
-                            if (nfa.getFinalStates().contains(nfa_state)) {
-                                is_final = true;
+                        boolean isFinal = false;
+                        for (int nfaState : u) {
+                            if (nfa.getFinalStates().contains(nfaState)) {
+                                isFinal = true;
                                 break;
                             }
                         }
-                        if (is_final) {
-                            Set<Integer> dfa_final_states = dfa.getFinalStates();
-                            dfa_final_states.add(new_dfa_state);
-                            dfa.setFinalStates(dfa_final_states);
+                        if (isFinal) {
+                            Set<Integer> dfaFinalStates = dfa.getFinalStates();
+                            dfaFinalStates.add(newDfaState);
+                            dfa.setFinalStates(dfaFinalStates);
                         }
                     } else {
                         for (Integer k : subsets.keySet()) {
                             if (subsets.get(k).equals(u)) {
-                                new_dfa_state = k;
+                                newDfaState = k;
                                 break;
                             }
                         }
                     }
 
-                    dfa.addTransition(cur_dfa_state, a, new_dfa_state);
+                    dfa.addTransition(curDfaState, a, newDfaState);
                 }
             }
         }
