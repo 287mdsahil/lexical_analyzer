@@ -90,13 +90,9 @@ public class SubsetConstruction {
     System.out.println("Dfa final states:" + dfa.getFinalStates());
 
     for (int i = 0; i < args[0].length(); i++) {
-
-      System.out.println(dfa.currentState);
       dfa.advance(args[0].charAt(i));
-      System.out.println(args[0].charAt(i));
-      System.out.println(dfa.currentState);
-      System.out.println();
     }
+
     if(dfa.isInFinalState()) 
       System.out.println("String accepted");
     else System.out.println("String rejected");
