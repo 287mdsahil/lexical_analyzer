@@ -17,7 +17,7 @@ public class SubsetConstruction {
         DFA dfa = new DFA(1, 0, new TreeSet<>());
 
         int start = nfa.getStartState();
-        Set<Character> alphabets = nfa.getAlphabets();
+        Set<Character> alphabets = nfa.getAlphabet();
 
         // Initialization
         Map<Integer, Set<Integer>> subsets = new TreeMap<>();
