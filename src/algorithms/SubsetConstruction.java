@@ -86,8 +86,6 @@ public class SubsetConstruction {
         DFA dfa = convert(nfa);
 
         System.out.println("Dfa no of states:" + dfa.getNumberOfStates());
-        System.out.println("Dfa transitions:" + dfa.transitions);
-        System.out.println("Dfa final states:" + dfa.getFinalStates());
 
         for (int i = 0; i < args[0].length(); i++) {
             dfa.advance(args[0].charAt(i));
