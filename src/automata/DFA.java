@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class DFA {
+    public static final int DEAD_STATE = -1;
+
     private int numberOfStates, startState, currentState;
     private Set<Integer> finalStates;
     private boolean isInDeadState;
@@ -71,6 +73,7 @@ public class DFA {
         Integer nextState = transitions.get(currentState).get(ch);
         if (nextState == null) {
             isInDeadState = true;
+            currentState = DEAD_STATE;
         } else {
             currentState = nextState;
         }
