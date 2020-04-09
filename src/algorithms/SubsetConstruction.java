@@ -2,13 +2,12 @@ package algorithms;
 
 import automata.DFA;
 import automata.NFA;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.LinkedList;
 
 public class SubsetConstruction {
 
@@ -23,13 +22,13 @@ public class SubsetConstruction {
         // Initialization
         Map<Integer, Set<Integer>> subsets = new TreeMap<>();
         subsets.put(0, nfa.epsilonClosure(start));
-        List<Integer> unmarkedDfaStates = new ArrayList<>();
-        unmarkedDfaStates.add(0);
+        LinkedList<Integer> unmarkedDfaStates = new LinkedList<Integer>();
+        unmarkedDfaStates.push(0);
+
 
         // Loop to form subsets
         while (!unmarkedDfaStates.isEmpty()) {
-            int curDfaState = unmarkedDfaStates.get(0);
-            unmarkedDfaStates.remove(0);
+            int curDfaState = unmarkedDfaStates.pop();
             Set<Integer> curNfaStates = subsets.get(curDfaState);
 
             for (Character a : alphabets) {
@@ -40,7 +39,7 @@ public class SubsetConstruction {
                 if (!subsets.containsValue(u)) {
                     newDfaState = subsets.size();
                     subsets.put(newDfaState, u);
-                    unmarkedDfaStates.add(newDfaState);
+                    unmarkedDfaStates.push(newDfaState);
 
                     dfa.increaseNumberOfStates(1);
 
