@@ -9,6 +9,7 @@ public class Regex {
     public Regex(String regex) {
         raw = regex;
         tokens = tokenize(raw);
+        tokens = replaceRanges(tokens);
         normalizedTokens = normalize(tokens);
         normalized = convertTokensToString(normalizedTokens);
     }
@@ -71,6 +72,36 @@ public class Regex {
             return true;
 
         return false;
+    }
+
+    public static ArrayList<RegexToken> replaceRanges(ArrayList<RegexToken> tokens) {
+        ArrayList<RegexToken> expanded = new ArrayList<>();
+
+        for (int idx = 0; idx < tokens.size(); idx++) {
+            RegexToken curr = tokens.get(idx);
+            if (curr.type != RegexTokenType.RANGEOPEN) {
+                expanded.add(curr);
+                continue;
+            }
+
+            idx++;
+            expanded.add(RegexToken.getToken(RegexSpecialChar.BOPEN));
+            while ((curr = tokens.get(idx)).type != RegexTokenType.RANGECLOSE) {
+                RegexToken next = tokens.get(idx + 1);
+                if (next.value < curr.value)
+                    throw new IllegalArgumentException("Range next falls before range first");
+
+                for (char ch = curr.value; ch < next.value; ch++) {
+                    expanded.add(new RegexToken(RegexTokenType.CHAR, ch));
+                    expanded.add(RegexToken.getToken(RegexSpecialChar.UNION));
+                }
+                expanded.add(new RegexToken(RegexTokenType.CHAR, next.value));
+                idx += 2;
+            }
+            expanded.add(RegexToken.getToken(RegexSpecialChar.BCLOSE));
+        }
+
+        return expanded;
     }
 
     public static ArrayList<RegexToken> normalize(ArrayList<RegexToken> tokens) {
