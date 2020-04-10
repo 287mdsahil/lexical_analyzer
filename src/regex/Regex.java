@@ -91,14 +91,14 @@ public class Regex {
                 if (next.value < curr.value)
                     throw new IllegalArgumentException("Range next falls before range first");
 
-                for (char ch = curr.value; ch < next.value; ch++) {
+                for (char ch = curr.value; ch <= next.value; ch++) {
                     expanded.add(new RegexToken(RegexTokenType.CHAR, ch));
                     expanded.add(RegexToken.getToken(RegexSpecialChar.UNION));
                 }
-                expanded.add(new RegexToken(RegexTokenType.CHAR, next.value));
                 idx += 2;
             }
-            expanded.add(RegexToken.getToken(RegexSpecialChar.BCLOSE));
+            // we have an extra union operator at the end, overwrite it with closing brackets
+            expanded.set(expanded.size() - 1, RegexToken.getToken(RegexSpecialChar.BCLOSE));
         }
 
         return expanded;
