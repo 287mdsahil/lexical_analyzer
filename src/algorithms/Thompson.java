@@ -140,6 +140,12 @@ public class Thompson {
             throw new IllegalStateException("Invalid Node type");
     }
 
+    public static NFA convert(Regex regex) {
+        RegexTree tree = new RegexTree(regex);
+
+        return traverse(tree.getRoot());
+    }
+
     public static void main(String args[]) {
         String str = "a*a";
         System.out.println(str);
