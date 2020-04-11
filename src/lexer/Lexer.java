@@ -19,7 +19,8 @@ public class Lexer {
     private List<Regex> regexes;
     private List<DFA> automata;
 
-    private int scannedChar;
+    private int scannedChar, id;
+    private StringBuilder lexeme;
     private List<Boolean> inFinalStateCache;
     private BufferedReader programFileReader;
     private List<LexToken> tokens;
@@ -46,11 +47,11 @@ public class Lexer {
             }
         }
         catch (FileNotFoundException e) {
-            System.out.println("Definitions file not found");
+            System.err.println("Definitions file not found");
             e.printStackTrace();
         }
         catch (IOException e) {
-            System.out.println("I/O Error");
+            System.err.println("I/O Error");
             e.printStackTrace();
         }
     }
@@ -71,7 +72,7 @@ public class Lexer {
             makeTokens();
         } 
         catch (IOException e) {
-            System.out.println("I/O Error while scanning program file");
+            System.err.println("I/O Error while scanning program file");
             e.printStackTrace();
         }
         List<LexToken> temp = new ArrayList<>(tokens);
@@ -81,20 +82,13 @@ public class Lexer {
 
     private void makeTokens() throws IOException {
         int ch;
-        StringBuilder lexeme = new StringBuilder();
+        lexeme = new StringBuilder();
 
         while ((ch = getChar()) != -1) {
             advanceAutomata(ch); // advance those automata which are not in dead state
 
             if (allAutomataInDeadState()) {
-                if (anyAutomatonWasInFinalState()) {
-                    // we have a token in this case
-                    handleMatch(lexeme);
-                }
-                else {
-                    // TODO: what happens here? i have no idea...
-                    consumeChar();
-                }
+                handlePossibleMatch();
 
                 resetAllAutomata();
                 resetFinalStatesCache();
@@ -106,6 +100,9 @@ public class Lexer {
                 updateFinalStatesCache();
             }
         }
+
+        // we may have an outstanding match/non-match
+        handlePossibleMatch();
     }
 
     private void setup(String programFilePath) {
@@ -113,12 +110,14 @@ public class Lexer {
         for (int i = 0; i < automata.size(); i++)
             inFinalStateCache.add(false);
         scannedChar = -1;
+        id = 0;
+        lexeme = null;
         tokens = new ArrayList<>();
         try {
             programFileReader = new BufferedReader(new FileReader(programFilePath));
         }
         catch (FileNotFoundException e) {
-            System.out.println("Program file not found");
+            System.err.println("Program file not found");
             e.printStackTrace();
         }
     }
@@ -126,18 +125,43 @@ public class Lexer {
     private void cleanup() {
         inFinalStateCache = null;
         scannedChar = -1;
+        id = -1;
+        lexeme = null;
         tokens = null;
         try {
             programFileReader.close();
         }
         catch (IOException e) {
-            System.out.println("I/O Error while closing program file");
+            System.err.println("I/O Error while closing program file");
             e.printStackTrace();
         }
     }
 
+    private void handlePossibleMatch() {
+        if (anyAutomatonWasInFinalState()) {
+            // we have a token in this case
+            handleMatch(lexeme);
+        }
+        else {
+            // here we have a non match
+            // we can have a partially matched lexeme: handle the invalid match
+            // but don't consume the current symbol;
+            // or the lexeme length is zero, meaning that a single symbol
+            // moved all the automata to a dead state: handle the invalid symbol
+            // and consume the symbol
+            if (lexeme.length() != 0) {
+                System.err.println("Invalid lexeme: " + lexeme);
+            }
+            else {
+                if (scannedChar != -1) // at the end
+                    System.err.println("Invalid symbol: unicode " + scannedChar);
+                consumeChar();
+            }
+        }
+    }
+
     private void handleMatch(StringBuilder lexeme) {
-        String type = "Unknown";
+        String type = "UNKNOWN";
         for (int idx = 0; idx < automata.size(); idx++) {
             if (inFinalStateCache.get(idx)) {
                 type = tokenTypes.get(idx);
@@ -145,7 +169,8 @@ public class Lexer {
             }
         }
 
-        System.out.println(String.format("TOKEN: type->%s, lexeme->%s", type, lexeme.toString()));
+        System.out.println(String.format("%d %s %s", id, type, lexeme));
+        tokens.add(new LexToken(id++, type, lexeme.toString()));
     }
 
     private int getChar() throws IOException {
