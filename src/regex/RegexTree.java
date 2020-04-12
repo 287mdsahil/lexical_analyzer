@@ -3,6 +3,8 @@ package regex;
 import java.util.ArrayList;
 import java.util.Stack;
 
+import utils.StringEscapeUtils;
+
 public class RegexTree {
     private RegexTreeNode root;
 
@@ -41,7 +43,9 @@ public class RegexTree {
     private void prettyPrint(RegexTreeNode node, String prefix, String childPrefix, 
                              StringBuilder buffer) {
         buffer.append(prefix);
-        buffer.append(node.getValue());
+        if (node.getType() == RegexTreeNodeType.CHAR && RegexSpecialChar.isSpecialChar(node.getValue()))
+            buffer.append(RegexSpecialChar.ESCAPE.charValue());
+        buffer.append(StringEscapeUtils.getRepresentation(node.getValue()));
         buffer.append('\n');
 
         RegexTreeNode leftChild = node.getLeftChild(), rightChild = node.getRightChild();

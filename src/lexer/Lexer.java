@@ -11,6 +11,7 @@ import algorithms.SubsetConstruction;
 import algorithms.Thompson;
 import automata.DFA;
 import regex.Regex;
+import utils.StringEscapeUtils;
 
 public class Lexer {
     private static char SEPARATOR = ' ';
@@ -150,11 +151,16 @@ public class Lexer {
             // moved all the automata to a dead state: handle the invalid symbol
             // and consume the symbol
             if (lexeme.length() != 0) {
-                System.err.println("Invalid lexeme: " + lexeme);
+                System.err.println(
+                    "Invalid lexeme: " + StringEscapeUtils.escape(lexeme.toString())
+                );
             }
             else {
                 if (scannedChar != -1) // at the end
-                    System.err.println("Invalid symbol: unicode " + scannedChar);
+                    System.err.println(
+                        "Invalid symbol: " 
+                        + StringEscapeUtils.getRepresentation((char) scannedChar)
+                    );
                 consumeChar();
             }
         }
@@ -169,8 +175,11 @@ public class Lexer {
             }
         }
 
-        System.out.println(String.format("%d %s %s", id, type, lexeme));
-        tokens.add(new LexToken(id++, type, lexeme.toString()));
+        String temp = lexeme.toString();
+
+        System.out.println(String.format("%d %s %s", id, type, StringEscapeUtils.escape(temp)));
+        
+        tokens.add(new LexToken(id++, type, temp));
     }
 
     private int getChar() throws IOException {
