@@ -112,15 +112,15 @@ public class StringEscapeUtils {
     /**
      * Escape a string with non-printable characters.
      * 
-     * <p>
-     * Currently implemented and throws {@code UnsupportedOperationException}.
-     * 
      * @param str a string.
      * @return The string with the unprintable characters converted into a
      * user-readable form, as per {@link #getRepresentation(char)}.
      */
     public static String escape(String str) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        StringBuilder buffer = new StringBuilder();
+        for (int idx = 0; idx < str.length(); idx++)
+            buffer.append(getRepresentation(str.charAt(idx)));
+        return buffer.toString();
     }
 
     /**
@@ -143,7 +143,11 @@ public class StringEscapeUtils {
 
             char second = str.charAt(idx++);
             if (second != UNICODE_ESCAPE) {
-                buffer.append(escape(second));
+                char escaped = escape(second);
+                if (escaped == second)
+                    buffer.append("" + first + second);
+                else
+                    buffer.append(escaped);
             }
             else {
                 buffer.append((char) Integer.parseInt(str.substring(idx, idx + 4), 16));
