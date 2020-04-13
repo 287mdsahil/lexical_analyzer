@@ -32,7 +32,7 @@ public class StringEscapeUtils {
     }
 
     /**
-     * Take a character and if it is an escape sequence chaarcter, return the
+     * Take a character and if it is an escape sequence character, return the
      * second character after the backward slash in its representation.
      * 
      * <p>
