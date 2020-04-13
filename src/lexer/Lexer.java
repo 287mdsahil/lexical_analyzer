@@ -11,19 +11,28 @@ import algorithms.SubsetConstruction;
 import algorithms.Thompson;
 import automata.DFA;
 import regex.Regex;
+import utils.Buffer;
 import utils.StringEscapeUtils;
 
 public class Lexer {
+    public static class PairOfInts {
+        public final int first, second;
+        public PairOfInts(int first, int second) {
+            this.first = first;
+            this.second = second;
+        }
+    }
+
     private static char SEPARATOR = ' ';
 
     private List<String> tokenTypes;
     private List<Regex> regexes;
     private List<DFA> automata;
 
-    private int scannedChar, id;
-    private StringBuilder lexeme;
-    private List<Boolean> inFinalStateCache;
-    private BufferedReader programFileReader;
+    private int id;
+    private Buffer buffer;
+    private List<List<Boolean>> inFinalStateCache;
+    private FileReader programFileReader;
     private List<LexToken> tokens;
 
     public Lexer(String typeRegexPairsFilePath) {
@@ -83,9 +92,8 @@ public class Lexer {
 
     private void makeTokens() throws IOException {
         int ch;
-        lexeme = new StringBuilder();
 
-        while ((ch = getChar()) != -1) {
+        while ((ch = buffer.get()) != -1) {
             advanceAutomata(ch); // advance those automata which are not in dead state
 
             if (allAutomataInDeadState()) {
@@ -93,42 +101,36 @@ public class Lexer {
 
                 resetAllAutomata();
                 resetFinalStatesCache();
-                lexeme = new StringBuilder();
             }
             else {
-                lexeme.append((char) ch);
-                consumeChar();
                 updateFinalStatesCache();
             }
         }
 
         // we may have an outstanding match/non-match
-        handlePossibleMatch();
+        if (buffer.size() != 0)
+            handlePossibleMatch();
     }
 
     private void setup(String programFilePath) {
         inFinalStateCache = new ArrayList<>();
-        for (int i = 0; i < automata.size(); i++)
-            inFinalStateCache.add(false);
-        scannedChar = -1;
         id = 0;
-        lexeme = null;
         tokens = new ArrayList<>();
         try {
-            programFileReader = new BufferedReader(new FileReader(programFilePath));
+            programFileReader = new FileReader(programFilePath);
         }
         catch (FileNotFoundException e) {
             System.err.println("Program file not found");
             e.printStackTrace();
         }
+        buffer = new Buffer(programFileReader);
     }
 
     private void cleanup() {
         inFinalStateCache = null;
-        scannedChar = -1;
         id = -1;
-        lexeme = null;
         tokens = null;
+        buffer = null;
         try {
             programFileReader.close();
         }
@@ -139,59 +141,25 @@ public class Lexer {
     }
 
     private void handlePossibleMatch() {
-        if (anyAutomatonWasInFinalState()) {
-            // we have a token in this case
-            handleMatch(lexeme);
+        PairOfInts cacheAndAutomataIndices = getCacheAndAutomataIndicesOfMatch();
+        if (cacheAndAutomataIndices != null) {
+            handleMatch(cacheAndAutomataIndices);
         }
         else {
-            // here we have a non match
-            // we can have a partially matched lexeme: handle the invalid match
-            // but don't consume the current symbol;
-            // or the lexeme length is zero, meaning that a single symbol
-            // moved all the automata to a dead state: handle the invalid symbol
-            // and consume the symbol
-            if (lexeme.length() != 0) {
-                System.err.println(
-                    "Invalid lexeme: " + StringEscapeUtils.escape(lexeme.toString())
-                );
-            }
-            else {
-                if (scannedChar != -1) // at the end
-                    System.err.println(
-                        "Invalid symbol: " 
-                        + StringEscapeUtils.getRepresentation((char) scannedChar)
-                    );
-                consumeChar();
-            }
+            String invalid = buffer.consume(inFinalStateCache.size() + 1);
+            System.err.println("Invalid match: " + StringEscapeUtils.escape(invalid));
         }
+        buffer.reset();
     }
 
-    private void handleMatch(StringBuilder lexeme) {
-        String type = "UNKNOWN";
-        for (int idx = 0; idx < automata.size(); idx++) {
-            if (inFinalStateCache.get(idx)) {
-                type = tokenTypes.get(idx);
-                break;
-            }
-        }
+    private void handleMatch(PairOfInts cacheAndAutomataIndices) {
+        String 
+            lexeme = buffer.consume(cacheAndAutomataIndices.first + 1),
+            type = tokenTypes.get(cacheAndAutomataIndices.second);
 
-        String temp = lexeme.toString();
-
-        System.out.println(String.format("%d %s %s", id, type, StringEscapeUtils.escape(temp)));
+        System.out.println(String.format("%d %s %s", id, type, StringEscapeUtils.escape(lexeme)));
         
-        tokens.add(new LexToken(id++, type, temp));
-    }
-
-    private int getChar() throws IOException {
-        if (scannedChar != -1) 
-            return scannedChar;
-        
-        scannedChar = programFileReader.read();
-        return scannedChar;
-    }
-
-    private void consumeChar() {
-        scannedChar = -1;
+        tokens.add(new LexToken(id++, type, lexeme));
     }
 
     private void advanceAutomata(int ch) {
@@ -217,20 +185,22 @@ public class Lexer {
     }
 
     private void updateFinalStatesCache() {
+        List<Boolean> temp = new ArrayList<>(automata.size());
         for (int idx = 0; idx < automata.size(); idx++)
-            inFinalStateCache.set(idx, automata.get(idx).isInFinalState());
+            temp.add(automata.get(idx).isInFinalState());
+        inFinalStateCache.add(temp);
     }
 
     private void resetFinalStatesCache() {
-        for (int idx = 0; idx < inFinalStateCache.size(); idx++)
-            inFinalStateCache.set(idx, false);
+        inFinalStateCache = new ArrayList<>();
     }
 
-    private boolean anyAutomatonWasInFinalState() {
-        for (Boolean b : inFinalStateCache)
-            if (b)
-                return true;
-        return false;
+    private PairOfInts getCacheAndAutomataIndicesOfMatch() {
+        for (int cacheIdx = inFinalStateCache.size() - 1; cacheIdx >= 0; cacheIdx--)
+            for (int autoIdx = 0; autoIdx < automata.size(); autoIdx++)
+                if (inFinalStateCache.get(cacheIdx).get(autoIdx))
+                    return new PairOfInts(cacheIdx, autoIdx);
+        return null;
     }
 
     public static void main(String[] args) {
