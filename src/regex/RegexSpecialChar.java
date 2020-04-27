@@ -6,7 +6,9 @@ public enum RegexSpecialChar {
     CLOSURE('*'), 
     CONCAT('.'), 
     EPSILON('ε'), 
-    ESCAPE('\\'), 
+    ESCAPE('\\'),
+    RANGECLOSE(']'),
+    RANGEOPEN('['),
     UNION('|');
 
     private final char charValue;

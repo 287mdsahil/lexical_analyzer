@@ -6,6 +6,8 @@ public enum RegexTokenType {
     CHAR, 
     CLOSURE, 
     CONCAT, 
-    EPSILON, 
+    EPSILON,
+    RANGECLOSE, 
+    RANGEOPEN,
     UNION
 }

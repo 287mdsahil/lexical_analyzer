@@ -2,13 +2,16 @@ package regex;
 
 import java.util.ArrayList;
 
+import utils.StringEscapeUtils;
+
 public class Regex {
     private final String raw, normalized;
     private ArrayList<RegexToken> tokens, normalizedTokens;
 
     public Regex(String regex) {
         raw = regex;
-        tokens = tokenize(raw);
+        tokens = tokenize(StringEscapeUtils.unescape(raw));
+        tokens = replaceRanges(tokens);
         normalizedTokens = normalize(tokens);
         normalized = convertTokensToString(normalizedTokens);
     }
@@ -33,8 +36,7 @@ public class Regex {
         ArrayList<RegexToken> tokens = new ArrayList<>();
 
         for (int idx = 0; idx < raw.length(); ) {
-            char first = raw.charAt(idx);
-            idx++;
+            char first = raw.charAt(idx++);
 
             if (!RegexSpecialChar.isSpecialChar(first)) {
                 tokens.add(new RegexToken(RegexTokenType.CHAR, first));
@@ -42,10 +44,10 @@ public class Regex {
             }
             
             if (first == RegexSpecialChar.ESCAPE.charValue()) {
-                char second = raw.charAt(idx);
-                idx++;
+                char second = raw.charAt(idx++);
 
                 tokens.add(new RegexToken(RegexTokenType.CHAR, second));
+                
                 continue;
             }
 
@@ -67,10 +69,37 @@ public class Regex {
                     || r == RegexTokenType.EPSILON 
                     || r == RegexTokenType.BOPEN;
 
-        if (lhs && rhs)
-            return true;
+        return (lhs && rhs);
+    }
 
-        return false;
+    public static ArrayList<RegexToken> replaceRanges(ArrayList<RegexToken> tokens) {
+        ArrayList<RegexToken> expanded = new ArrayList<>();
+
+        for (int idx = 0; idx < tokens.size(); idx++) {
+            RegexToken curr = tokens.get(idx);
+            if (curr.type != RegexTokenType.RANGEOPEN) {
+                expanded.add(curr);
+                continue;
+            }
+
+            idx++;
+            expanded.add(RegexToken.getToken(RegexSpecialChar.BOPEN));
+            while ((curr = tokens.get(idx)).type != RegexTokenType.RANGECLOSE) {
+                RegexToken next = tokens.get(idx + 1);
+                if (next.value < curr.value)
+                    throw new IllegalArgumentException("Range next falls before range first");
+
+                for (char ch = curr.value; ch <= next.value; ch++) {
+                    expanded.add(new RegexToken(RegexTokenType.CHAR, ch));
+                    expanded.add(RegexToken.getToken(RegexSpecialChar.UNION));
+                }
+                idx += 2;
+            }
+            // we have an extra union operator at the end, overwrite it with closing brackets
+            expanded.set(expanded.size() - 1, RegexToken.getToken(RegexSpecialChar.BCLOSE));
+        }
+
+        return expanded;
     }
 
     public static ArrayList<RegexToken> normalize(ArrayList<RegexToken> tokens) {
@@ -104,6 +133,11 @@ public class Regex {
                 buffer.append(token.value);
                 continue;
             }
+            
+            if (token.type == RegexTokenType.CHAR) {
+                buffer.append(StringEscapeUtils.getRepresentation(token.value));
+                continue;
+            }
 
             buffer.append(token.value);
         }
@@ -119,7 +153,9 @@ public class Regex {
 
         ArrayList<RegexToken> ntoks = r.getNormalizedTokens();
         for (RegexToken tok : ntoks) {
-            System.out.println(tok.value + "\t" + tok.type);
+            char ch = tok.value;
+            String toDisp = StringEscapeUtils.getRepresentation(ch);
+            System.out.println(toDisp + "\t" + tok.type);
         }
         
     }
