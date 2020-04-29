@@ -24,12 +24,13 @@ public class Lexer {
     }
 
     private static char SEPARATOR = ' ';
+    private static boolean CHECK_CRLF = System.lineSeparator().equals("\r\n");
 
     private List<String> tokenTypes;
     private List<Regex> regexes;
     private List<DFA> automata;
 
-    private int id;
+    private int id, row, col;
     private Buffer buffer;
     private List<List<Boolean>> inFinalStateCache;
     private FileReader programFileReader;
@@ -114,7 +115,7 @@ public class Lexer {
 
     private void setup(String programFilePath) {
         inFinalStateCache = new ArrayList<>();
-        id = 0;
+        id = 0; row = col = 1;
         tokens = new ArrayList<>();
         try {
             programFileReader = new FileReader(programFilePath);
@@ -128,7 +129,7 @@ public class Lexer {
 
     private void cleanup() {
         inFinalStateCache = null;
-        id = -1;
+        id = row = col = -1;
         tokens = null;
         buffer = null;
         try {
@@ -147,7 +148,11 @@ public class Lexer {
         }
         else {
             String invalid = buffer.consume(inFinalStateCache.size() + 1);
-            System.err.println("Invalid match: " + StringEscapeUtils.escape(invalid));
+            System.err.println(
+                String.format("Invalid match @ row %d col %d: %s", 
+                                row, col, StringEscapeUtils.escape(invalid))
+            );
+            updateRowCol(invalid);
         }
         buffer.reset();
     }
@@ -157,9 +162,35 @@ public class Lexer {
             lexeme = buffer.consume(cacheAndAutomataIndices.first + 1),
             type = tokenTypes.get(cacheAndAutomataIndices.second);
 
-        System.out.println(String.format("%d %s %s", id, type, StringEscapeUtils.escape(lexeme)));
+        // System.out.println(String.format("%d %d %d %s %s", id, row, col, type, StringEscapeUtils.escape(lexeme)));
         
-        tokens.add(new LexToken(id++, type, lexeme));
+        tokens.add(new LexToken(id++, row, col, type, lexeme));
+        updateRowCol(lexeme);
+    }
+
+    private void updateRowCol(String str) {
+        for (int idx = 0; idx < str.length(); ) {
+            char ch = str.charAt(idx);
+
+            if (CHECK_CRLF && ch == '\r') {
+                if (idx < str.length() - 1) {
+                    char next = str.charAt(idx + 1);
+                    if (next == '\n') {
+                        ch = next;
+                        idx++;
+                    }
+                }
+            }
+            
+            if (ch == '\n' || ch == '\r') {
+                row++;
+                col = 1;
+            }
+            else {
+                col++;
+            }
+            idx++;
+        }
     }
 
     private void advanceAutomata(int ch) {
