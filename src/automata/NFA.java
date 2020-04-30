@@ -10,6 +10,8 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import utils.StringEscapeUtils;
+
 public class NFA {
     private int numberOfStates, startState;
     private Set<Integer> currentStates, finalStates;
@@ -218,6 +220,40 @@ public class NFA {
         }
 
         return alphabet;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("    Start State: " + startState + "\n");
+        sb.append("    Final States: " + finalStates + "\n");
+        sb.append("    Alphabet: " + StringEscapeUtils.escape(getAlphabet().toString()) + "\n");
+        sb.append("    Epsilon Transitions: \n");
+        sb.append(String.format("        %5s %s\n", "STATE", "TRANSITIONS"));
+        for (int idx = 0; idx < epsilonTransitions.size(); idx++) {
+            sb.append(
+                String.format("        %5d %s\n", 
+                    idx, StringEscapeUtils.escape(epsilonTransitions.get(idx).toString())
+                )
+            );
+        }
+        sb.append("    Normal Transitions: \n");
+        for (int idx = 0; idx < normalTransitions.size(); idx++) {
+            sb.append("        State " + idx + "\n");
+            sb.append(String.format("            %6s %s\n", "SYMBOL", "TRANSITIONS"));
+            for (Map.Entry<Character, Set<Integer>> e : normalTransitions.get(idx).entrySet()) {
+                sb.append(
+                    String.format(
+                        "            %6s %s\n", 
+                        StringEscapeUtils.getRepresentation(e.getKey()),
+                        StringEscapeUtils.escape(e.getValue().toString())
+                    )
+                );
+            }
+        }
+        sb.setLength(sb.length() - 1);
+        return sb.toString();
     }
 
     public static void main(String[] args) {

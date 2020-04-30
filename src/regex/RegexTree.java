@@ -52,11 +52,11 @@ public class RegexTree {
 
         if (leftChild != null) {
             if (rightChild != null) {
-                prettyPrint(leftChild, childPrefix + "├── ", childPrefix + "│   ", buffer);
-                prettyPrint(rightChild, childPrefix + "└── ", childPrefix + "    ", buffer);
+                prettyPrint(leftChild, childPrefix + "|-- ", childPrefix + "|   ", buffer);
+                prettyPrint(rightChild, childPrefix + "\\-- ", childPrefix + "    ", buffer);
             }
             else {
-                prettyPrint(leftChild, childPrefix + "└── ", childPrefix + "    ", buffer);
+                prettyPrint(leftChild, childPrefix + "\\-- ", childPrefix + "    ", buffer);
             }
         }
     }
@@ -65,7 +65,7 @@ public class RegexTree {
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         
-        prettyPrint(root, "", "", buffer);
+        prettyPrint(root, "    ", "    ", buffer);
 
         return buffer.toString();
     }

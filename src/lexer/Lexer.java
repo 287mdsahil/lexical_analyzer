@@ -10,7 +10,9 @@ import java.util.List;
 import algorithms.SubsetConstruction;
 import algorithms.Thompson;
 import automata.DFA;
+import automata.NFA;
 import regex.Regex;
+import regex.RegexTree;
 import utils.Buffer;
 import utils.StringEscapeUtils;
 
@@ -26,6 +28,7 @@ public class Lexer {
     private static char SEPARATOR = ' ';
     private static boolean CHECK_CRLF = System.lineSeparator().equals("\r\n");
 
+    private boolean verbose;
     private List<String> tokenTypes;
     private List<Regex> regexes;
     private List<DFA> automata;
@@ -37,6 +40,12 @@ public class Lexer {
     private List<LexToken> tokens;
 
     public Lexer(String typeRegexPairsFilePath) {
+        this(typeRegexPairsFilePath, true);
+    }
+
+    public Lexer(String typeRegexPairsFilePath, boolean verbose) {
+        this.verbose = verbose;
+
         tokenTypes = new ArrayList<>();
         regexes = new ArrayList<>();
         automata = new ArrayList<>();
@@ -68,13 +77,27 @@ public class Lexer {
     }
 
     private void updateDefinitions(String tokenType, String regex) {
-        tokenTypes.add(tokenType);
-
         Regex r = new Regex(regex);
+        RegexTree rt = new RegexTree(r);
+        NFA nfa = Thompson.convert(rt);
+        DFA dfa = SubsetConstruction.convert(nfa);
+
+        if (verbose) {
+            showDetails(tokenType, r, rt, nfa, dfa);
+            System.out.println();
+        }
+
+        tokenTypes.add(tokenType);
         regexes.add(r);
-        
-        DFA dfa = SubsetConstruction.convert(Thompson.convert(r));
         automata.add(dfa);
+    }
+
+    private void showDetails(String tokenType, Regex r, RegexTree rt, NFA nfa, DFA dfa) {
+        System.out.println("Token Type: " + tokenType);
+        System.out.println("Regex: " + r.getNormalizedString());
+        System.out.println("Regex Tree:\n" + rt);
+        System.out.println("NFA:\n" + nfa);
+        System.out.println("DFA:\n" + dfa);
     }
 
     public List<LexToken> tokenize(String programFilePath) {

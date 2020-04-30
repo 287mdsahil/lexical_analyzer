@@ -140,6 +140,10 @@ public class Thompson {
             throw new IllegalStateException("Invalid Node type");
     }
 
+    public static NFA convert(RegexTree regexTree) {
+        return traverse(regexTree.getRoot());
+    }
+
     public static NFA convert(Regex regex) {
         RegexTree tree = new RegexTree(regex);
 
