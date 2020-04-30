@@ -9,17 +9,32 @@ import lexer.Lexer;
 
 public class Main {
     public static void main(String[] args) {
-        if (args.length != 2 && args.length != 3) {
+        int len = args.length;
+
+        if (len == 0) {
+            showExecutionFormat();
+            return;
+        }
+
+        boolean verbose = false;
+
+        if (args[len - 1].equals("-v")) {
+            verbose = true;
+            len--;
+        }
+
+        if (len != 2 && len != 3) {
             showExecutionFormat();
             return;
         }
 
         String regexFilePath = args[0], programFilePath = args[1], outputFilePath = null;
-        if (args.length == 3) outputFilePath = args[2];
+        if (len == 3) outputFilePath = args[2];
 
-        Lexer lexer = new Lexer(regexFilePath);
+        Lexer lexer = new Lexer(regexFilePath, verbose);
 
-        System.out.println("Starting tokenization. Warnings will be emitted on invalid matches.\n");
+        System.out.println("Starting tokenization.\n");
+        System.err.println("Warnings will be emitted on invalid matches.\n");
 
         List<LexToken> allTokens = lexer.tokenize(programFilePath),
             nonWhitespaceTokens = filterWhitespaces(allTokens);
@@ -50,8 +65,10 @@ public class Main {
 
     private static void showExecutionFormat() {
         System.out.println(
-            "Format: java -cp classpath Main regexFilePath programFilePath [outputFilePath]"
+            "Format: java -cp classpath Main regexFilePath programFilePath [outputFilePath] [-v]"
         );
+        System.out.println("Arguments in square brackets denote optional.");
+        System.out.println("-v: Verbose flag. If enabled, dump all details of intermediate steps.");
     }
 
     private static void dumpTokens(List<LexToken> tokens) {

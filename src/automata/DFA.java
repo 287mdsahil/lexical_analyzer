@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import utils.StringEscapeUtils;
+
 public class DFA {
     public static final int DEAD_STATE = -1;
 
@@ -122,6 +124,33 @@ public class DFA {
 
     public boolean isInFinalState() {
         return finalStates.contains(currentState);
+    }
+
+    public Set<Character> getAlphabet() {
+        Set<Character> alphabet = new TreeSet<>();
+
+        for (Map<Character, Integer> t : transitions) {
+            alphabet.addAll(t.keySet());
+        }
+
+        return alphabet;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("    Start State: " + startState + "\n");
+        sb.append("    Final States: " + finalStates + "\n");
+        sb.append("    Alphabet: " + StringEscapeUtils.escape(getAlphabet().toString()) + "\n");
+        sb.append("    Transitions: " + "\n");
+        sb.append(String.format("        %5s %s\n", "STATE", "TRANSITIONS"));
+        for (int idx = 0; idx < transitions.size(); idx++) {
+            sb.append(String.format("        %5d %s\n", idx, StringEscapeUtils.escape(transitions.get(idx).toString())));
+        }
+        sb.setLength(sb.length() - 1);
+
+        return sb.toString();
     }
 
     public static void main(String[] args) {
