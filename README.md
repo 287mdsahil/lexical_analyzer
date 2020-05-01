@@ -7,16 +7,21 @@ syntax_analyzer/
     bin/    // use this to hold the compiled .class files, but do not upload them!
     docs/   // documentation
     src/    // this will contain java sources, subfolders in here denote packages
+        algorithms/
         automata/
+        lexer/
         regex/
-        nfa/
+        utils/
+        Main.java
 ```
 
 ### Package Information
 
-1. [`automata`](docs/automata.md) - finite state machines
-2. [`regex`](docs/regex.md) - regular expression parsing, and utilities like shunting yard algorithm and tree generation
-3. [`nfa`] - conversion of regex to NFA, using Thompson algorithm
+1. ['algorithms'] - implementation of Thompson and Subset Construction Algorithm
+2. [`automata`](docs/automata.md) - finite state machines
+3. ['lexer'] - lexical analyzer
+4. [`regex`](docs/regex.md) - regular expression parsing, and utilities like shunting yard algorithm and tree generation
+5. ['utils'] - utility classes for support
 
 ### Compilation
 
