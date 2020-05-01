@@ -1,9 +1,9 @@
 package automata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -257,7 +257,7 @@ public class NFA {
     }
 
     public static void main(String[] args) {
-        NFA nfa = new NFA(5, 0, List.of(2, 4));
+        NFA nfa = new NFA(5, 0, Arrays.asList(2, 4));
 
         nfa.addEpsilonTransition(0, 1);
         nfa.addEpsilonTransition(0, 3);
