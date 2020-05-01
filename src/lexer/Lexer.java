@@ -56,6 +56,9 @@ public class Lexer {
     private void init(String typeRegexPairsFilePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(typeRegexPairsFilePath))) {
             for (String line = br.readLine(); line != null; line = br.readLine()) {
+                if (line.isEmpty())
+                    continue;
+
                 int splitAt = line.indexOf(SEPARATOR);
                 if (splitAt == -1)
                     throw new IllegalArgumentException("Line does not contain separator");
