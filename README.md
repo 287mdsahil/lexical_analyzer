@@ -5,9 +5,6 @@ Some information regarding the project.
 .
 ├── bin
 |   └── <will contain compiled objects>
-├── docs
-│   ├── automata.md
-│   └── regex.md
 ├── README.md
 ├── src
     ├── algorithms
