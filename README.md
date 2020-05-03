@@ -1,18 +1,37 @@
 Some information regarding the project.
 
 ### Project Structure 
-
 ```
-syntax_analyzer/
-    bin/    // use this to hold the compiled .class files, but do not upload them!
-    docs/   // documentation
-    src/    // this will contain java sources, subfolders in here denote packages
-        algorithms/
-        automata/
-        lexer/
-        regex/
-        utils/
-        Main.java
+.
+├── bin
+|   └── <will contain compiled objects>
+├── docs
+│   ├── automata.md
+│   └── regex.md
+├── README.md
+├── src
+    ├── algorithms
+    │   ├── SubsetConstruction.java
+    │   └── Thompson.java
+    ├── automata
+    │   ├── DFA.java
+    │   └── NFA.java
+    ├── lexer
+    │   ├── Lexer.java
+    │   └── LexToken.java
+    ├── Main.java
+    ├── regex
+    │   ├── InfixToPostfix.java
+    │   ├── Regex.java
+    │   ├── RegexSpecialChar.java
+    │   ├── RegexToken.java
+    │   ├── RegexTokenType.java
+    │   ├── RegexTree.java
+    │   ├── RegexTreeNode.java
+    │   └── RegexTreeNodeType.java
+    └── utils
+        ├── Buffer.java
+        └── StringEscapeUtils.java
 ```
 
 ### Package Information
