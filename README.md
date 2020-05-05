@@ -33,11 +33,11 @@ Some information regarding the project.
 
 ### Package Information
 
-1. ['algorithms'] - implementation of Thompson and Subset Construction Algorithm
-2. [`automata`](docs/automata.md) - finite state machines
-3. ['lexer'] - lexical analyzer
-4. [`regex`](docs/regex.md) - regular expression parsing, and utilities like shunting yard algorithm and tree generation
-5. ['utils'] - utility classes for support
+1. `algorithms` - implementation of Thompson and Subset Construction Algorithm
+2. `automata` - finite state machines
+3. `lexer` - lexical analyzer
+4. `regex` - regular expression parsing, and utilities like shunting yard algorithm and tree generation
+5. `utils` - utility classes for support
 
 ### UML Diagram
 ![Image failed to load](./resources/uml/uml.png)
