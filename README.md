@@ -40,7 +40,7 @@ Some information regarding the project.
 5. ['utils'] - utility classes for support
 
 ### UML Diagram
-![Image failed to load](./uml/uml.png)
+![Image failed to load](./resources/uml/uml.png)
 
 ### Compilation
 
