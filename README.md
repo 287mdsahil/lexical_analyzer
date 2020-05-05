@@ -44,7 +44,7 @@ Some information regarding the project.
 Follow the above folder stucture. For compilation use `javac`. Mention the classpath (`-cp`), the destination (`-d`) and the encoding (`-encoding`).
 
 ```
-syntax_analyzer>javac -cp src/ -d bin/ -encoding utf-8 src/regex/Regex.java
+syntax_analyzer>javac -cp src/ -d bin/ -encoding utf-8 src/Main.java
 ```
 
 *Notes*: 
@@ -54,12 +54,8 @@ syntax_analyzer>javac -cp src/ -d bin/ -encoding utf-8 src/regex/Regex.java
 
 ### Execution
 
-Use the `java` command. Link the compiled binaries in the classpath. Refer to classes by their fully qualified package name before the class name.
+Use the `java` command. Link the compiled binaries in the classpath. Refer to classes by their fully qualified package name before the class name. The `-v`, is an optional arguement, when enabled the intermediate regex trees, NFAs and DFAs are printed on the console.
 
 ```
-syntax_analyzer>java -cp bin/ regex.Regex "(a|b)*abc"
+syntax analyzer>java -cp bin/ Main <regex_file> <program_file> <output_symbol_table_file> -v
 ```
-
-### Misc
-
-**Oracle references (Java SE 8)**: [here](https://docs.oracle.com/javase/8/docs/technotes/tools/#basic).
