@@ -39,6 +39,9 @@ Some information regarding the project.
 4. [`regex`](docs/regex.md) - regular expression parsing, and utilities like shunting yard algorithm and tree generation
 5. ['utils'] - utility classes for support
 
+### UML Diagram
+![Image failed to load](./uml/uml.png)
+
 ### Compilation
 
 Follow the above folder stucture. For compilation use `javac`. Mention the classpath (`-cp`), the destination (`-d`) and the encoding (`-encoding`).
@@ -59,6 +62,3 @@ Use the `java` command. Link the compiled binaries in the classpath. Refer to cl
 ```
 syntax analyzer>java -cp bin/ Main <regex_file> <program_file> <output_symbol_table_file> -v
 ```
-
-### UML Diagram
-![Image failed to load](./uml/uml.png)
