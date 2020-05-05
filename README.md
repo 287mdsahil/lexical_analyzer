@@ -59,3 +59,6 @@ Use the `java` command. Link the compiled binaries in the classpath. Refer to cl
 ```
 syntax analyzer>java -cp bin/ Main <regex_file> <program_file> <output_symbol_table_file> -v
 ```
+
+### UML Diagram
+![Image failed to load](./uml/uml.png)
