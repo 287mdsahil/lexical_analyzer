@@ -75,6 +75,17 @@ In the regex file we can add our token describtions. Each line contains one toke
 - Common escape sequence chars supported like `\n` `\r` `\t`
 - Unicode escape supported e.g. `\u0020` is space
 
+##### Supported special regex chars
+- Bracket close `)`, 
+- Bracket open `(`,
+- Closure `*`,
+- Concat `.`,
+- Epsilon `ε`,
+- Escape `\`,
+- Range close `]`,
+- Range open`[`,
+- Union `|`;
+    
 ##### Example regex file
 ```
 KEYWORD int|float|return
