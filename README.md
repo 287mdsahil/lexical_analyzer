@@ -62,3 +62,25 @@ Use the `java` command. Link the compiled binaries in the classpath. Refer to cl
 ```
 syntax analyzer>java -cp bin/ Main <regex_file> <program_file> <output_symbol_table_file> -v
 ```
+### Regex file syntax
+In the regex file we can add our token describtions. Each line contains one token describtion. The syntax is as follows:
+```
+<token_name> <regex_exp>
+```
+##### Rules
+- In token name do not use spaces since it is a seperator
+- Special chars like `*`, `.` are reserved and have special meanings, like `*` means closure. In order to use these, use escape chars like `\*`.
+- All symbols allowed in regex expression.
+- `[azAZ09]` type ranges supported. For example [az] denotes all characters from `a` to `z`
+- Common escape sequence chars supported like `\n` `\r` `\t`
+- Unicode escape supported e.g. `\u0020` is space
+
+##### Example regex file
+```
+KEYWORD int|float|return
+INTEGER [09][09]*
+FLOAT ([09][09]*\.[09]*)|([09]*\.[09][09]*)
+IDENTIFIER (_|[AZaz])(_|[09AZaz])*
+PUNCTUATOR {|}|\(|\)|;|,
+WHITESPACE (\u0020|\t|\r|\n)(\u0020|\t|\r|\n)*
+```
