@@ -44,6 +44,16 @@ Use the `java` command. Link the compiled binaries in the classpath. Refer to cl
 syntax_analyzer>java -cp bin/ regex.Regex "(a|b)*abc"
 ```
 
+### Part 1 Table (change name)
+
+| Type | actualRegex  | regexUsed  |
+| :----: | :-------------------------------: | :---------------------------------------: |
+| KEYWORD | int &#124; float &#124; return | int &#124; float &#124; return |
+| IDENTIFIER | [_A-Za-z][_0-9A-Za-z]* | (_&#124;[AZaz])(_&#124;[09AZaz])* |
+| INTEGER | (+&#124;-)?[0-9][0-9]* | (+&#124;-&#124;ε)[09][09]* |
+| FLOAT | (+&#124;-)?(([0-9]+&#92;.[0-9]*)&#124;([0-9]*&#92;.[0-9]+))((e&#124;E)(+&#124;-)[0-9]+)) | (+&#124;-&#124;ε)(([09][09]*&#92;.[09]*)&#124;([09]*&#92;.[09][09]*))(ε&#124;((e&#124;E)(+&#124;-&#124;ε)[09][09]*)) |
+
+
 ### Misc
 
 **Oracle references (Java SE 8)**: [here](https://docs.oracle.com/javase/8/docs/technotes/tools/#basic).
