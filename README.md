@@ -109,9 +109,9 @@ REL_OP <|>|==|<=|>=
 ARITH_OP +|-|/|\*
 ```
 
-### Part 1 Table (change name)
+### Part 1: Regular expressions to identify identifiers, integers and floats.
 
-| Type | actualRegex  | regexUsed  |
+| Type | Actual Regex (Lex Format)  | Regex Used (In Our Regex File) |
 | :---: | :---: | :---: |
 | `KEYWORD` | `if\|int\|float\|for` | `if\|int\|float\|for` |
 | `IDENTIFIER` | `[_A-Za-z][_0-9A-Za-z]*` | `(_\|[AZaz])(_\|[09AZaz])*` |
