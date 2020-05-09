@@ -1,6 +1,7 @@
 Some information regarding the project.
 
 ### Project Structure 
+
 ```
 .
 ├── bin
@@ -33,13 +34,14 @@ Some information regarding the project.
 
 ### Package Information
 
-1. `algorithms` - implementation of Thompson and Subset Construction Algorithm
-2. `automata` - finite state machines
+1. `algorithms` - implementation of thompson and subset construction algorithms
+2. `automata` - finite state machines like NFA and DFA
 3. `lexer` - lexical analyzer
 4. `regex` - regular expression parsing, and utilities like shunting yard algorithm and tree generation
-5. `utils` - utility classes for support
+5. `utils` - utility classes for support like buffer and string escaping
 
 ### UML Diagram
+
 ![Image failed to load](./resources/uml/uml.png)
 
 ### Compilation
@@ -63,30 +65,38 @@ Use the `java` command. Link the compiled binaries in the classpath. Refer to cl
 syntax analyzer>java -cp bin/ Main <regex_file> <program_file> <output_symbol_table_file> -v
 ```
 ### Regex file syntax
-In the regex file we can add our token describtions. Each line contains one token describtion. The syntax is as follows:
+
+In the regex file we can add our token descriptions. Each line contains one token description. The syntax is as follows:
+
 ```
-<token_name> <regex_exp>
+<token_name_1> <regex_exp_1>
+<token_name_2> <regex_exp_2>
+...
 ```
+
 ##### Rules
-- In token name do not use spaces since it is a seperator
-- Special chars like `*`, `.` are reserved and have special meanings, like `*` means closure. In order to use these, use escape chars like `\*`.
+
+- In token name do not use spaces since it is a seperator.
+- Special chars like `*`, `.` are reserved and have special meaning, like `*` means closure. In order to use these, use escape chars like `\*`.
 - All symbols allowed in regex expression.
-- `[azAZ09]` type ranges supported. For example [az] denotes all characters from `a` to `z`
-- Common escape sequence chars supported like `\n` `\r` `\t`
-- Unicode escape supported e.g. `\u0020` is space
+- `[azAZ09]` type ranges supported. For example `[az]` denotes all characters from `a` to `z`.
+- Common escape sequence chars like `\n` `\r` `\t` are supported.
+- Unicode escape supported e.g. `\u0020` is space.
 
 ##### Supported special regex chars
-- Bracket close `)`, 
-- Bracket open `(`,
-- Closure `*`,
-- Concat `.`,
-- Epsilon `ε`,
-- Escape `\`,
-- Range close `]`,
-- Range open`[`,
-- Union `|`;
+
+- Bracket close `)`
+- Bracket open `(`
+- Closure `*`
+- Concat `.`
+- Epsilon `ε`
+- Escape `\`
+- Range close `]`
+- Range open`[`
+- Union `|`
     
 ##### Example regex file
+
 ```
 KEYWORD int|float|return|main|for|if|else
 INTEGER [09][09]*
@@ -102,9 +112,9 @@ ARITH_OP +|-|/|\*
 ### Part 1 Table (change name)
 
 | Type | actualRegex  | regexUsed  |
-| :----: | :-------------------------------: | :---------------------------------------: |
-| KEYWORD | int &#124; float &#124; return | int &#124; float &#124; return |
-| IDENTIFIER | [_A-Za-z][_0-9A-Za-z]* | (_ &#124;[AZaz])(_ &#124;[09AZaz])* |
-| INTEGER | (+&#124;-)?[0-9][0-9]* | (+&#124;-&#124;ε)[09][09]* |
-| FLOAT | (+&#124;-)?(([0-9]+&#92;.[0-9]* )&#124;([0-9]*&#92;.[0-9]+))((e&#124;E)(+&#124;-)[0-9]+)) | (+&#124;-&#124;ε)(([09][09]*&#92;.[09]*)&#124;([09]*&#92;.[09][09]*))(ε&#124;((e&#124;E)(+&#124;-&#124;ε)[09][09]*)) |
+| :---: | :---: | :---: |
+| `KEYWORD` | `if\|int\|float\|for` | `if\|int\|float\|for` |
+| `IDENTIFIER` | `[_A-Za-z][_0-9A-Za-z]*` | `(_\|[AZaz])(_\|[09AZaz])*` |
+| `INTEGER` | `(+\|-)?[0-9][0-9]*` | `(+\|-\|ε)[09][09]*` |
+| `FLOAT` | `(+\|-)?(([0-9]+\.[0-9]*)\|([0-9]*\.[0-9]+))((e\|E)(+\|-)?[0-9]+))?` | `(+\|-\|ε)(([09][09]*\.[09]*)\|([09]*\.[09][09]*))(ε\|((e\|E)(+\|-\|ε)[09][09]*))` |
 
