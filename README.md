@@ -60,7 +60,7 @@ syntax_analyzer>javac -cp src/ -d bin/ -encoding utf-8 src/Main.java
 
 ### Execution
 
-Use the `java` command. Link the compiled binaries in the classpath. Refer to classes by their fully qualified package name before the class name. The `<output_symbol_table_file>` is optional; if not given, the symbol table will be printed to the console. The `-v`, is an optional flag which when enabled displays the intermediate regex trees, NFAs and DFAs on the console.
+Use the `java` command. Link the compiled binaries in the classpath. Refer to classes by their fully qualified package name before the class name. The `<output_symbol_table_file>` is optional; if not given, the symbol table will be printed to the console. The argument `-v` is an optional flag, which when enabled displays the intermediate regex trees, NFAs and DFAs on the console.
 
 ```
 syntax analyzer>java -cp bin/ Main <regex_file> <program_file> [<output_symbol_table_file>] [-v]
