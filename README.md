@@ -99,7 +99,7 @@ In the regex file we can add our token descriptions. Each line contains one toke
 ##### Example regex file
 
 ```
-KEYWORD int|float|return|main|for|if|else
+KEYWORD int|float|return|for|if|else
 INTEGER [09][09]*
 FLOAT (([09][09]*\.[09]*)|([09]*\.[09][09]*))(ε|((e|E)(+|-|ε)[09][09]*))
 IDENTIFIER (_|[AZaz])(_|[09AZaz])*
