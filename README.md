@@ -7,7 +7,7 @@ Some information regarding the project.
 ├── bin
 |   └── <will contain compiled objects>
 ├── README.md
-├── src
+└── src
     ├── algorithms
     │   ├── SubsetConstruction.java
     │   └── Thompson.java
