@@ -54,6 +54,7 @@ syntax_analyzer>javac -cp src/ -d bin/ -encoding utf-8 src/Main.java
 
 *Notes*: 
 
+- The code is compatible with **Java 8 and upwards**.
 - The encoding should be `utf-8`. This is to support the epsilon (ε) symbol in the code.
 - Some Windows machines may not support `utf-8` encoding. We recommend compilation and execution on Linux or Mac machines.
 - Wildcards (`*`, `*.java`, etc) may be used in the filenames to compile everything in one go.
